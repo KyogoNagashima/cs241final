@@ -1,9 +1,16 @@
+//variables to manually change for debugging : k and 
+
 namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
         public Form1()
         {
+            //IMPORTANT VARAIBLES
+            int k=5;                    //# of clusters
+            double thresh = 0.5;        //threshhold for change before stopping
+
+
             InitializeComponent();
             Bitmap bmp = new Bitmap("C:\\Users\\etwan\\OneDrive\\Desktop\\Important images\\QoeGLyD.jpg");
             pictureBox1.Image = bmp;
@@ -26,7 +33,6 @@ namespace WinFormsApp1
             } */
 
             //SETUP FOR K-MEANS ALG
-            int k=5;
             double[] avecolor = new double[k];
             List<(int,int,Color)>[] clusters = new List<(int,int,Color)>[k];
 
@@ -44,63 +50,93 @@ namespace WinFormsApp1
 
             //get initial averages
             setAves();
-
             for(int i = 0; i<k;i++){
                 System.Diagnostics.Debug.WriteLine(i);
                 System.Diagnostics.Debug.WriteLine(avecolor[i]);
             }
 
+            double[] oldavecolor;
 
-
-
-            /*
-            int k =5;
-            //This array stores the average color for each group 
-            int[] avecolor = new int[k];
-            //This array holds the different groups
-            int[,,] groups = new int[k,(bmp.Width*bmp.Width),2];  //note: disregarding a couple pixels in this build
-            //fill groups, initially it doesn't matter which pixel goes to which group, just add sequentially
-            int x=0;
-            int y=0;
-            for(int g = 0; g<k;g++){ //for each group
-                for(int element = 0;element<(bmp.Width*bmp.Width)/k;element++){ //for each element in a group
-                    groups[g,element,0]=x;
-                    groups[g,element,1]=y;
-                    if(x==bmp.Width-1){
-                        x=0;
-                        y++;
-                    } else{x++;}
+            //while loop
+            do {
+                oldavecolor = new double[k];
+                for(int averageindex=0; averageindex < k; averageindex++){
+                    oldavecolor[averageindex]=avecolor[averageindex];
                 }
-            } 
-            //compute averages
+                clusters = Regroup();
+                setAves();
+            } while(!threshold(oldavecolor,avecolor));
 
-            for(int g =0; g<k;g++){
-                int tot = 0;
-                for(int element = 0;element<(bmp.Width*bmp.Width);element++){
-                    Color pixel = bmp.GetPixel(groups[g,element,0],groups[g,element,1]);
-                    tot += pixel.ToArgb();
-                }
-                System.Diagnostics.Debug.WriteLine(tot);
-          
-            } */
+            //print aves
+            for(int z = 0; z<k;z++){
+            System.Diagnostics.Debug.WriteLine(z);
+            System.Diagnostics.Debug.WriteLine(avecolor[z]);
+            
+            }
+
+
 
             //set the averages of all clusters
             void setAves(){
                 for(int clust = 0; clust<k; clust++){
                     double tot = 0;
                     for(int i = 0; i < clusters[clust].Count();i++){
-                        double R = (clusters[clust][i].Item3.R);
-                        double G = (clusters[clust][i].Item3.G);
-                        double B = (clusters[clust][i].Item3.B);
-                        tot += (R+G+B)/3;
+                        double R = Math.Pow((clusters[clust][i].Item3.R),2);
+                        double G = Math.Pow((clusters[clust][i].Item3.G),2);
+                        double B = Math.Pow((clusters[clust][i].Item3.B),2);
+
+
+                        tot += Math.Sqrt((R+G+B)/3);
                     }
-                    System.Diagnostics.Debug.WriteLine(tot);
+                    //System.Diagnostics.Debug.WriteLine(tot);
                     tot = tot/clusters[clust].Count();
                     avecolor[clust] = tot;
                 }
         
             }
+            List<(int,int,Color)>[] Regroup(){
+                List<(int,int,Color)>[] newlist = new List<(int,int,Color)>[k];
+                //initialize clusters
+                for(int i = 0; i<k;i++){
+                    newlist[i] = new List<(int,int,Color)>();
+                }
+                for(int cluster = 0; cluster<k; cluster++){
+                    for(int i = 0; i < clusters[cluster].Count();i++){
+                        //assign pixel to cluster with closest ave
+
+                        double R = Math.Pow((clusters[cluster][i].Item3.R),2);
+                        double G = Math.Pow((clusters[cluster][i].Item3.G),2);
+                        double B = Math.Pow((clusters[cluster][i].Item3.B),2);
+                        double colorval = Math.Sqrt((R+G+B)/3);
+
+                        double diff = double.PositiveInfinity;
+                        int index =0;
+                        //find closest ave
+                        for(int aveindex=0; aveindex < k; aveindex++ ){
+                            double currentdif = Math.Abs(colorval - avecolor[aveindex]);
+                            if(currentdif < diff){
+                                diff = currentdif;
+                                index = aveindex;
+                            }
+                        }
+                        newlist[index].Add(clusters[cluster][i]);
+                    }
+                }
+                return newlist;
+            }
+            bool threshold(double[] old, double[] newbie){
+                int count = 0;
+                for(int indx = 0;indx<k;indx++){
+                    if(Math.Abs(old[indx]-newbie[indx])<thresh){
+                        count++;
+                    }
+                }
+             return count==k;
+            }
         } 
+
+       
+
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
