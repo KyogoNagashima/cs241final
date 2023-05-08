@@ -12,7 +12,7 @@ namespace WinFormsApp1
 
 
             InitializeComponent();
-            Bitmap bmp = new Bitmap("C:\\Users\\etwan\\OneDrive\\Desktop\\Important images\\QoeGLyD.jpg");
+            Bitmap bmp = new Bitmap("C:\\website.jpg");
             pictureBox1.Image = bmp;
             var list = new List<(int,int,Color)>();
             for (int i = 0; i < bmp.Height; i++)
@@ -133,6 +133,17 @@ namespace WinFormsApp1
                 }
              return count==k;
             }
+            
+            //System.Diagnostics.Debug.WriteLine(Regroup()[0][0]);
+            for (int i = 0; i < Regroup().Length; i++) {
+                    for (int j=0; j< Regroup()[i].Count; j++) {
+                        bmp.SetPixel(Regroup()[i][j].Item1, Regroup()[i][j].Item2, Regroup()[i][0].Item3);
+                    } 
+                    //System.Diagnostics.Debug.WriteLine(Regroup()[0][0].Item1);
+                //for (int j = 0; j < Regroup()[i][0].Length; )
+            }
+             
+            
         } 
 
        
