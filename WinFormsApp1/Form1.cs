@@ -75,15 +75,15 @@ namespace WinFormsApp1
             
             //recolor
             Color[] colors = new Color[k];
-            colors[0]=Color.Blue;
-            colors[1]=Color.Red;
-            colors[2]=Color.Green;
-            colors[3]=Color.Yellow;
-            colors[4]=Color.Black;
+            Random rndcolor = new Random();
+            for(int i=0; i<k;i++){
+                colors[i]=Color.FromArgb(rndcolor.Next(256), rndcolor.Next(256), rndcolor.Next(256));
+            }
+
             //System.Diagnostics.Debug.WriteLine(Regroup()[0][0]);
             for (int i = 0; i < k; i++) {
                     for (int j=0; j< clusters[i].Count; j++) {
-                        bmp.SetPixel(clusters[i][j].Item2, clusters[i][j].Item1, clusters[i][0].Item3);
+                        bmp.SetPixel(clusters[i][j].Item2, clusters[i][j].Item1, colors[i]);
                     } 
                     //System.Diagnostics.Debug.WriteLine(Regroup()[0][0].Item1);
                 //for (int j = 0; j < Regroup()[i][0].Length; )
