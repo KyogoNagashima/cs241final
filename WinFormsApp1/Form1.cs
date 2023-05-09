@@ -8,11 +8,11 @@ namespace WinFormsApp1
         {
             //IMPORTANT VARAIBLES
             int k=5;                    //# of clusters
-            double thresh = 0.5;        //threshhold for change before stopping
+            double thresh = 0.05;        //threshhold for change before stopping
 
 
             InitializeComponent();
-            Bitmap bmp = new Bitmap("C:\\website.jpg");
+            Bitmap bmp = new Bitmap("C:\\Users\\etwan\\OneDrive\\Desktop\\Important images\\453423383_9ac92b8977.jpg");
             pictureBox1.Image = bmp;
             var list = new List<(int,int,Color)>();
             for (int i = 0; i < bmp.Height; i++)
@@ -44,7 +44,7 @@ namespace WinFormsApp1
             //randomly assign pixels to a cluster
             Random rnd = new Random();
             for(int i = 0; i<list.Count;i++){
-                int rand = rnd.Next(0,5);
+                int rand = rnd.Next(0,k);
                 clusters[rand].Add(list[i]);
             }
 
@@ -72,6 +72,16 @@ namespace WinFormsApp1
             System.Diagnostics.Debug.WriteLine(z);
             System.Diagnostics.Debug.WriteLine(avecolor[z]);
             
+            //recolor
+            //System.Diagnostics.Debug.WriteLine(Regroup()[0][0]);
+            for (int i = 0; i < k; i++) {
+                    for (int j=0; j< clusters[i].Count; j++) {
+                        bmp.SetPixel(clusters[i][j].Item2, clusters[i][j].Item1, clusters[i][0].Item3);
+                    } 
+                    //System.Diagnostics.Debug.WriteLine(Regroup()[0][0].Item1);
+                //for (int j = 0; j < Regroup()[i][0].Length; )
+            }
+
             }
 
 
@@ -134,14 +144,7 @@ namespace WinFormsApp1
              return count==k;
             }
             
-            //System.Diagnostics.Debug.WriteLine(Regroup()[0][0]);
-            for (int i = 0; i < Regroup().Length; i++) {
-                    for (int j=0; j< Regroup()[i].Count; j++) {
-                        bmp.SetPixel(Regroup()[i][j].Item1, Regroup()[i][j].Item2, Regroup()[i][0].Item3);
-                    } 
-                    //System.Diagnostics.Debug.WriteLine(Regroup()[0][0].Item1);
-                //for (int j = 0; j < Regroup()[i][0].Length; )
-            }
+            
              
             
         } 
