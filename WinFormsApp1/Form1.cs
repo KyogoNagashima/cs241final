@@ -19,10 +19,10 @@ namespace WinFormsApp1
             {
                 for (int j = 0; j < bmp.Width; j++)
                 {
-                    if (i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height)
+                    if (i >= 0 && i < bmp.Height && j >= 0 && j < bmp.Width)
                     {
-                        Color pixel = bmp.GetPixel(i, j);
-                        list.Add((j,i,pixel));
+                        Color pixel = bmp.GetPixel(j, i);
+                        list.Add((i,j,pixel));
                     }
                        
                 }
@@ -50,6 +50,7 @@ namespace WinFormsApp1
 
             //get initial averages
             setAves();
+            //print out averages
             for(int i = 0; i<k;i++){
                 System.Diagnostics.Debug.WriteLine(i);
                 System.Diagnostics.Debug.WriteLine(avecolor[i]);
@@ -73,6 +74,12 @@ namespace WinFormsApp1
             System.Diagnostics.Debug.WriteLine(avecolor[z]);
             
             //recolor
+            Color[] colors = new Color[k];
+            colors[0]=Color.Blue;
+            colors[1]=Color.Red;
+            colors[2]=Color.Green;
+            colors[3]=Color.Yellow;
+            colors[4]=Color.Black;
             //System.Diagnostics.Debug.WriteLine(Regroup()[0][0]);
             for (int i = 0; i < k; i++) {
                     for (int j=0; j< clusters[i].Count; j++) {
